@@ -76,7 +76,8 @@ async def get_google_token(auth_code: AuthCode):
                 "https://www.googleapis.com/auth/calendar.events",
                 "openid"
             ],
-            redirect_uri='http://booking.safiabakery.uz'
+            # redirect_uri='http://localhost:5173'
+            redirect_uri='https://booking.safiabakery.uz'
         )
         #https://reservations-front.vercel.app
         #http://localhost:3000
