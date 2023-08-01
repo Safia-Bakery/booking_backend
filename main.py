@@ -52,8 +52,8 @@ class AuthCode(BaseModel):
 
 @app.get("/verify")
 async def verify_token(token: str = None, refresh_token: str = None):
-    os.environ["CLIENT_ID"] = "472393125983-vhdijrojcjtj8n0h1dvcpejghn3td3k3.apps.googleusercontent.com"
-    os.environ["CLIENT_SECRET"] = "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"
+    os.environ["CLIENT_ID"] = "584370108370-gu51j6u432c3gdicmu723dnei97en9ai.apps.googleusercontent.com"
+    os.environ["CLIENT_SECRET"] = "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"
 
     response = requests.get('https://oauth2.googleapis.com/tokeninfo', params={'access_token': token})
     if response.status_code == 200:
@@ -76,8 +76,8 @@ async def get_google_token(auth_code: AuthCode):
                 "https://www.googleapis.com/auth/calendar.events",
                 "openid"
             ],
-            # redirect_uri='http://localhost:5173'
-            redirect_uri='https://booking.safiabakery.uz'
+            redirect_uri='http://localhost:5173'
+            # redirect_uri='https://booking.safiabakery.uz'
         )
         #https://reservations-front.vercel.app
         #http://localhost:3000
@@ -178,8 +178,8 @@ def format_date(date_string):
     return formatted_date
 
 def create_event(auth_info, res_data):
-    os.environ["CLIENT_ID"] = "472393125983-vhdijrojcjtj8n0h1dvcpejghn3td3k3.apps.googleusercontent.com"
-    os.environ["CLIENT_SECRET"] = "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"
+    os.environ["CLIENT_ID"] = "584370108370-gu51j6u432c3gdicmu723dnei97en9ai.apps.googleusercontent.com"
+    os.environ["CLIENT_SECRET"] = "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"
     try:
         creds = Credentials.from_authorized_user_info({
             'access_token': auth_info.token,
