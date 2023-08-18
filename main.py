@@ -93,8 +93,8 @@ async def get_google_token(auth_code: AuthCode):
                 "https://www.googleapis.com/auth/calendar.events",
                 "openid"
             ],
-            #redirect_uri='http://localhost:5173'
-            redirect_uri='https://booking.safiabakery.uz'
+            redirect_uri='http://localhost:5173'
+            #redirect_uri='https://booking.safiabakery.uz'
         )
         #https://reservations-front.vercel.app
         #http://localhost:3000
@@ -110,7 +110,7 @@ async def get_google_token(auth_code: AuthCode):
             'refresh_token': credentials.refresh_token,
         })
     except Exception as e:
-        print(e)
+        raise
 
 def is_valid_email(email):
     email_regex = r"[^@]+@[^@]+\.[^@]+"  # This is a simple email regex
@@ -172,7 +172,7 @@ def get_user_emails(auth_info):
         
         return users
     except Exception as e:
-        print(e)
+        raise
 
 def format_date(date_string):
     # parse the date string into a datetime object
@@ -227,9 +227,9 @@ def create_event(auth_info, res_data):
 
 
         event = service.events().insert(calendarId='primary', body=event, sendUpdates='all').execute()
-        print(f'Event created: {event.get("htmlLink")}')
+        #print(f'Event created: {event.get("htmlLink")}')
     except Exception as e:
-        print(e)
+        raise
 
 # @app.post("/user/emails/")
 # def get_emails_from_token(auth_info: AuthInfo):
@@ -308,7 +308,7 @@ async def create_reservation_endpoint(reservation_data: Reservation_data,db: Ses
         create_event(access_token, reservation_data)
         return {"message": "Reservation created successfully", "reservation": reservation}
     except Exception as e:
-        print(e)
+        #print(e)
         raise HTTPException(status_code=400, detail=str(e))
 
 
