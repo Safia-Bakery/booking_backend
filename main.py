@@ -93,7 +93,7 @@ async def get_google_token(auth_code: AuthCode):
                 "https://www.googleapis.com/auth/calendar.events",
                 "openid"
             ],
-            # redirect_uri='http://localhost:5173'
+            #redirect_uri='http://localhost:5173'
             redirect_uri='https://booking.safiabakery.uz'
         )
         #https://reservations-front.vercel.app
@@ -203,7 +203,7 @@ def create_event(auth_info, res_data):
 
         event = {
         'summary': res_data.title,
-        'location': 'Conference room #1',
+        'location': 'Конференц зал #' + res_data.room_id,
         'description': res_data.description,
         'start': {
             'dateTime': format_date(res_data.from_time),
