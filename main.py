@@ -29,6 +29,7 @@ import re
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+bot_token = '6208508369:AAGw5_17M-RmIYGiXXLnzRFozBYB5JOykZg'
 
 # CORS configuration
 app.add_middleware(
@@ -49,6 +50,25 @@ def get_db():
 
 class AuthCode(BaseModel):
     code: str
+
+
+def sendtotelegramchannel(bot_token,chat_id,message_text):
+
+    # Create the request payload
+    payload = {
+        'chat_id': chat_id,
+        'text': message_text,
+        'parse_mode': 'HTML'
+    }
+
+    # Send the request to send the inline keyboard message
+    response = requests.post(f'https://api.telegram.org/bot{bot_token}/sendMessage', json=payload,)
+
+    # Check the response status
+    if response.status_code == 200:
+        return response
+    else:
+        return False
 
 @app.get("/verify")
 async def verify_token(token: str = None, refresh_token: str = None):
@@ -305,6 +325,8 @@ async def create_reservation_endpoint(reservation_data: Reservation_data,db: Ses
 
 
         reservation = crud.create_reservation(db, room_id, from_time, to_time, title, description, reservation_date, participants, email)
+        if reservation:
+            sendtotelegramchannel(bot_token=bot_token,chat_id=-988967246,message_text=f"Уважаемые коллеги!\n\n {reservation_date} числа с {from_time} до {to_time} Конференц зал №{room_id} (на третьем этаже) будет забронирована.")
         create_event(access_token, reservation_data)
         return {"message": "Reservation created successfully", "reservation": reservation}
     except Exception as e:
