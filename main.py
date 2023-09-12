@@ -326,7 +326,7 @@ async def create_reservation_endpoint(reservation_data: Reservation_data,db: Ses
 
         reservation = crud.create_reservation(db, room_id, from_time, to_time, title, description, reservation_date, participants, email)
         if reservation:
-            sendtotelegramchannel(bot_token=bot_token,chat_id=-988967246,message_text=f"Уважаемые коллеги!\n\n {reservation_date.strftime("%Y-%m-%d")} числа с {reservation.from_time.strftime("%H:%M")} до {reservation.to_time.strftime("%H:%M")} Конференц зал №{room_id} (на третьем этаже) будет забронирована.")
+            sendtotelegramchannel(bot_token=bot_token,chat_id=-988967246,message_text=f"Уважаемые коллеги!\n\n {datetime.fromisoformat(reservation_date).strftime('%Y-%m-%d')} числа с {datetime.fromisoformat(from_time).strftime('%H:%M')} до {datetime.fromisoformat(to_time).strftime('%H:%M')} Конференц зал №{room_id} (на третьем этаже) будет забронирована.")
         create_event(access_token, reservation_data)
         return {"message": "Reservation created successfully", "reservation": reservation}
     except Exception as e:
