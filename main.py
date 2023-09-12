@@ -8,7 +8,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from pydantic import BaseModel
 from typing import List
-from datetime import datetime
+from datetime import datetime,timezone,timedelta
 import pytz
 import os
 import requests
@@ -304,6 +304,16 @@ class Reservation_data(BaseModel):
     access_token: AccessToken
 
 
+def date_filter(data,time):
+    date_object = datetime.fromisoformat(data[:-1])
+    date_object_utc = date_object.replace(tzinfo=timezone.utc)
+    desired_timezone = timezone(timedelta(hours=5))
+    if time==0:
+        date_object_desired_timezone = date_object_utc.astimezone(desired_timezone).strftime("%Y-%m-%d")
+    if time==1:
+        date_object_desired_timezone = date_object_utc.astimezone(desired_timezone).strftime("%H:%M")
+        
+    return date_object_desired_timezone
 
 @app.post("/reservations")
 async def create_reservation_endpoint(reservation_data: Reservation_data,db: Session = Depends(get_db)):
@@ -321,13 +331,12 @@ async def create_reservation_endpoint(reservation_data: Reservation_data,db: Ses
                                 headers={'Authorization': f'Bearer {access_token.token}'})
         userinfo = response.json()
         email = userinfo['email']
-        #print(userinfo)
-
+        
 
     
         reservation = crud.create_reservation(db, room_id, from_time, to_time, title, description, reservation_date, participants, email)
         if reservation:
-            sendtotelegramchannel(bot_token=bot_token,chat_id=-988967246,message_text=f"Уважаемые коллеги!\n\n {datetime.fromisoformat(reservation_date[:-5]).strftime('%Y-%m-%d')} числа с {datetime.fromisoformat(from_time[:-5]).strftime('%H:%M')} до {datetime.fromisoformat(to_time[:-5]).strftime('%H:%M')} Конференц зал №{room_id} (на третьем этаже) будет забронирована.")
+            sendtotelegramchannel(bot_token=bot_token,chat_id=-988967246,message_text=f"Уважаемые коллеги!\n\n {date_filter(data=reservation_date,time=0)} числа с {date_filter(from_time,1)} до {date_filter(to_time,1)} Конференц зал №{room_id} (на третьем этаже) будет забронирована.")
         create_event(access_token, reservation_data)
         return {"message": "Reservation created successfully", "reservation": reservation}
     except Exception as e:
