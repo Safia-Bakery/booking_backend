@@ -309,7 +309,7 @@ def date_filter(data,time):
     date_object_utc = date_object.replace(tzinfo=timezone.utc)
     desired_timezone = timezone(timedelta(hours=5))
     if time==0:
-        date_object_desired_timezone = date_object_utc.astimezone(desired_timezone).strftime("%Y-%m-%d")
+        date_object_desired_timezone = date_object_utc.astimezone(desired_timezone).strftime("%d.%m.%Y")
     if time==1:
         date_object_desired_timezone = date_object_utc.astimezone(desired_timezone).strftime("%H:%M")
         
@@ -335,8 +335,13 @@ async def create_reservation_endpoint(reservation_data: Reservation_data,db: Ses
 
     
         reservation = crud.create_reservation(db, room_id, from_time, to_time, title, description, reservation_date, participants, email)
+        if room_id==1:
+            floor  = 'на третьем этаже'
+        else:
+            floor  = 'на втором этаже'
+
         if reservation:
-            sendtotelegramchannel(bot_token=bot_token,chat_id=-988967246,message_text=f"Уважаемые коллеги!\n\n {date_filter(data=reservation_date,time=0)} числа с {date_filter(from_time,1)} до {date_filter(to_time,1)} Конференц зал №{room_id} (на третьем этаже) будет забронирована.")
+            sendtotelegramchannel(bot_token=bot_token,chat_id=-988967246,message_text=f"Уважаемые коллеги!\n\n {date_filter(data=reservation_date,time=0)} с {date_filter(from_time,1)} до {date_filter(to_time,1)} \nКонференц зал №{room_id} ({floor}) будет забронирована✅.")
         create_event(access_token, reservation_data)
         return {"message": "Reservation created successfully", "reservation": reservation}
     except Exception as e:
