@@ -307,7 +307,7 @@ class Reservation_data(BaseModel):
 
 @app.post("/reservations")
 async def create_reservation_endpoint(reservation_data: Reservation_data,db: Session = Depends(get_db)):
-    #try:
+    try:
         room_id = reservation_data.room_id
         from_time = reservation_data.from_time
         to_time = reservation_data.to_time
@@ -326,14 +326,13 @@ async def create_reservation_endpoint(reservation_data: Reservation_data,db: Ses
 
     
         reservation = crud.create_reservation(db, room_id, from_time, to_time, title, description, reservation_date, participants, email)
-        print(reservation_date,from_time,to_time)
         if reservation:
             sendtotelegramchannel(bot_token=bot_token,chat_id=-988967246,message_text=f"Уважаемые коллеги!\n\n {datetime.fromisoformat(reservation_date[:-5]).strftime('%Y-%m-%d')} числа с {datetime.fromisoformat(from_time[:-5]).strftime('%H:%M')} до {datetime.fromisoformat(to_time[:-5]).strftime('%H:%M')} Конференц зал №{room_id} (на третьем этаже) будет забронирована.")
         create_event(access_token, reservation_data)
         return {"message": "Reservation created successfully", "reservation": reservation}
-    #except Exception as e:
-    #    #print(e)
-    #    raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        #print(e)
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 
