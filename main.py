@@ -341,7 +341,7 @@ async def create_reservation_endpoint(reservation_data: Reservation_data,db: Ses
             floor  = 'на втором этаже'
 
         if reservation:
-            sendtotelegramchannel(bot_token=bot_token,chat_id=-1001940608784,message_text=f"Уважаемые коллеги!\n\n {date_filter(data=reservation_date,time=0)} с {date_filter(from_time,1)} до {date_filter(to_time,1)} \nКонференц зал №{room_id} ({floor}) будет забронирована✅.")
+            sendtotelegramchannel(bot_token=bot_token,chat_id=-1001940608784,message_text=f"Уважаемые коллеги!\n\n {date_filter(data=reservation_date,time=0)} с {date_filter(from_time,1)} до {date_filter(to_time,1)} \nКонференц зал №{room_id} ({floor}) будет забронирована✅.\n\nЗабронировал: {reservation.created_by}")
         create_event(access_token, reservation_data)
         return {"message": "Reservation created successfully", "reservation": reservation}
     except Exception as e:
